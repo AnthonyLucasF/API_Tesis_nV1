@@ -28,9 +28,6 @@ export const getDefectosxid =
 
 // INSERT: Crear un nuevo registro
 export const postDefectos = async (req, res) => {
-    const [[loteExist]] = await conmysql.query('SELECT 1 FROM lote WHERE lote_id=?', [lote_id]);
-    if (!loteExist) return res.status(400).json({ message: 'Lote no válido' });
-
     try {
         const {
             defectos_cabeza_roja, defectos_cabeza_naranja, defectos_cabeza_floja, defectos_hepato_reventado, defectos_corbata, defectos_deformes,
@@ -42,6 +39,10 @@ export const postDefectos = async (req, res) => {
             lote_id, usuario_id
         } = req.body;
 
+        if (!lote_codigo || !lote_fecha_ingreso || !usuario_id) {
+            return res.status(400).json({ message: "Campos obligatorios faltantes" });
+        }
+
         const [rows] = await conmysql.query(
             `INSERT INTO defectos 
                     (defectos_cabeza_roja, defectos_cabeza_naranja, defectos_cabeza_floja, defectos_hepato_reventado, defectos_corbata, defectos_deformes, 
@@ -52,13 +53,13 @@ export const postDefectos = async (req, res) => {
                     defectos_porcentaje_corte_desviado, defectos_basura, defectos_total_defectos, defectos_observaciones, defectos_acciones_correctivas, 
                     lote_id, usuario_id) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [   defectos_cabeza_roja, defectos_cabeza_naranja, defectos_cabeza_floja, defectos_hepato_reventado, defectos_corbata, defectos_deformes,
-                defectos_deshidratado_leve, defectos_deshidratado_moderado, defectos_deterioro, defectos_rojo, defectos_juvenil, defectos_flacido, 
+            [defectos_cabeza_roja, defectos_cabeza_naranja, defectos_cabeza_floja, defectos_hepato_reventado, defectos_corbata, defectos_deformes,
+                defectos_deshidratado_leve, defectos_deshidratado_moderado, defectos_deterioro, defectos_rojo, defectos_juvenil, defectos_flacido,
                 defectos_mudado, defectos_mal_descabezado, defectos_mezclas_de_especies, defectos_necrosis_leve, defectos_necrosis_moderada,
                 defectos_quebrado, defectos_pequenios, defectos_melanosis, defectos_3er_segmento_separado, defectos_porcentaje_cascara,
                 defectos_porcentaje_intestino, defectos_porcentaje_sin_telon, defectos_porcentaje_falta_de_corte, defectos_porcentaje_corte_profundo,
                 defectos_porcentaje_corte_desviado, defectos_basura, defectos_total_defectos, defectos_observaciones, defectos_acciones_correctivas,
-                lote_id, usuario_id ]
+                lote_id, usuario_id]
         );
 
         const nuevoDefecto = {
