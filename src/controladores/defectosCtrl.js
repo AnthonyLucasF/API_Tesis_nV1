@@ -28,6 +28,9 @@ export const getDefectosxid =
 
 // INSERT: Crear un nuevo registro
 export const postDefectos = async (req, res) => {
+    const [[loteExist]] = await conmysql.query('SELECT 1 FROM lote WHERE lote_id=?', [lote_id]);
+    if (!loteExist) return res.status(400).json({ message: 'Lote no válido' });
+
     try {
         const {
             defectos_cabeza_roja, defectos_cabeza_naranja, defectos_cabeza_floja, defectos_hepato_reventado, defectos_corbata, defectos_deformes,
