@@ -24,10 +24,6 @@ export const getLotexid = async (req, res) => {
 // INSERT: Crear nuevo lote
 export const postLote = async (req, res) => {
 
-    if (!lote_codigo || !lote_fecha_ingreso || !usuario_id) {
-        return res.status(400).json({ message: "Campos obligatorios faltantes" });
-    }
-
     try {
         const {
             tipo_id, vehiculo_id, chofer_id, lote_codigo, lote_fecha_ingreso, lote_hora_ingreso,
@@ -35,6 +31,10 @@ export const postLote = async (req, res) => {
             lote_n_gavetas_conicas, lote_n_gavetas_caladas, lote_n_sacos_hielo, lote_n_sacos_metasulfito,
             lote_n_sacos_sal, lote_observaciones, usuario_id
         } = req.body;
+
+        if (!lote_codigo || !lote_fecha_ingreso || !usuario_id) {
+            return res.status(400).json({ message: "Campos obligatorios faltantes" });
+        }
 
         const [rows] = await conmysql.query(
             `INSERT INTO lote 
